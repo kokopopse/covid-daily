@@ -9,7 +9,7 @@ import json
 
 from unidecode import unidecode
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import numpy as np
 
@@ -158,6 +158,10 @@ def data(country, chart, as_json=False):
 
         x = chart['series'][0]['data']
         y = [datetime.strptime(value + ', 2020', '%b %d, %Y') for value in chart['xAxis']['categories']]
+        
+        # Make dates increasing forever
+        for date_index in range(1,len(y)):
+            while y[date_index]<=y[date_index-1]: y[date_index] += timedelta(days=1) 
 
         data = pd.DataFrame({'Date': y, chart['column']: x})
         data.set_index('Date', inplace=True)
